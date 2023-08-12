@@ -6,7 +6,6 @@ class DoctorController {
   getAll = factory.getAll(Doctor);
   getOne = factory.getOne(Doctor);
   update = factory.update(Doctor);
-  isValid = factory.isValidId(Doctor);
 }
 
 module.exports = new DoctorController();

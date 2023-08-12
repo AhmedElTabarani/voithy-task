@@ -9,6 +9,7 @@ const hpp = require('hpp');
 
 const patientRouter = require('./routes/patient.routes');
 const doctorRouter = require('./routes/doctor.routes');
+const recordRouter = require('./routes/record.routes');
 
 const AppError = require('./utils/AppError');
 
@@ -33,6 +34,7 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use('/api/doctors', doctorRouter);
 app.use('/api/patients', patientRouter);
+app.use('/api/records', recordRouter);
 
 app.use((req, res, next) => {
   next(

@@ -15,21 +15,25 @@ const recordSchema = mongoose.Schema(
     notes: { type: String, required: true },
     sessionDate: { type: Date, required: true },
     treatment: { type: String, required: true },
-    messages: [
-      {
-        text: {
-          type: String,
-          required: true,
+    messages: {
+      type: [
+        {
+          message: {
+            type: String,
+            required: true,
+          },
+          date: {
+            type: Date,
+            default: Date.now,
+          },
         },
-        date: {
-          type: Date,
-          required: true,
-        },
-      },
-    ],
+      ],
+    },
   },
   { timestamps: true }
 );
+
+recordSchema.index({ doctorId: 1, patientId: 1 }, { unique: true });
 
 const Record = mongoose.model('Record', recordSchema);
 

@@ -6,7 +6,6 @@ class PatientController {
   create = factory.create(Patient);
   getOne = factory.getOne(Patient);
   update = factory.update(Patient);
-  isValid = factory.isValidId(Patient);
 }
 
 module.exports = new PatientController();

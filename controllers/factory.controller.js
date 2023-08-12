@@ -4,16 +4,6 @@ const asyncHandler = require('../utils/asyncHandler');
 const { sendSuccess } = require('../utils/sendResponse');
 
 class FactoryController {
-  isValidId = (Model) =>
-    asyncHandler(async (req, res, next) => {
-      const id = req.params.id;
-      if (!mongoose.Types.ObjectId.isValid(id))
-        return next(
-          new AppError(`Invalid ${Model.modelName} id`, 400)
-        );
-      next();
-    });
-
   create = (Model) =>
     asyncHandler(async (req, res, next) => {
       const doc = await Model.create(req.body);
