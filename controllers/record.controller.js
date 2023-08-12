@@ -3,6 +3,7 @@ const Patient = require('../models/patient.model');
 const Record = require('../models/record.model');
 const APIFeatures = require('../utils/APIFeature');
 const AppError = require('../utils/AppError');
+const sendEmailNotificationToPatient = require('../utils/EmailService');
 const asyncHandler = require('../utils/asyncHandler');
 const { sendSuccess } = require('../utils/sendResponse');
 
@@ -56,14 +57,23 @@ class RecordController {
 
   create = asyncHandler(async (req, res, next) => {
     const doctorId = req.body.doctorId;
-    if (!(await Doctor.findById(doctorId)))
-      return next(new AppError('Doctor not found', 404));
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) return next(new AppError('Doctor not found', 404));
 
     const patientId = req.body.patientId;
-    if (!(await Patient.findById(patientId)))
-      return next(new AppError('Patient not found', 404));
+    const patient = await Patient.findById(patientId);
+    if (!patient) return next(new AppError('Patient not found', 404));
 
     const record = await Record.create(req.body);
+
+    await sendEmailNotificationToPatient({
+      to: patient.email,
+      subject: 'You have connected with a doctor',
+      message: `You have connected with Dr. ${doctor.name}`,
+      patient: patient.name,
+      doctor: doctor.name,
+      from: doctor.email,
+    });
     sendSuccess(record, 201, res);
   });
 
@@ -82,7 +92,10 @@ class RecordController {
           new: true,
           runValidators: true,
         }
-      );
+      ).populate({
+        path: 'patientId',
+        select: 'name email',
+      });
 
       if (!record)
         return next(
@@ -91,6 +104,15 @@ class RecordController {
             404
           )
         );
+
+      await sendEmailNotificationToPatient({
+        to: record.patientId.email,
+        subject: 'Your record has been updated',
+        message: `Your ${Object.keys(req.body).join(', ')} with Dr. ${req.user.name} has been updated`,
+        patient: record.patientId.name,
+        doctor: req.user.name,
+        from: req.user.email,
+      });
 
       sendSuccess(record, 200, res);
     }
@@ -117,7 +139,10 @@ class RecordController {
           new: true,
           runValidators: true,
         }
-      );
+      ).populate({
+        path: 'patientId',
+        select: 'name email',
+      });
 
       if (!record)
         return next(
@@ -127,6 +152,14 @@ class RecordController {
           )
         );
 
+      await sendEmailNotificationToPatient({
+        to: record.patientId.email,
+        subject: 'You have a new message from your doctor',
+        message: req.body.message,
+        patient: record.patientId.name,
+        doctor: req.user.name,
+        from: req.user.email,
+      });
       sendSuccess(record, 200, res);
     }
   );
@@ -134,7 +167,7 @@ class RecordController {
   sendMessageToAllOwnedPatientsOfDoctor = asyncHandler(
     async (req, res, next) => {
       const doctorId = req.params.id;
-      const records = await Record.updateMany(
+      const updatedResult = await Record.updateMany(
         {
           doctorId,
         },
@@ -152,13 +185,33 @@ class RecordController {
         }
       );
 
-      if (!records)
+      if (updatedResult.matchedCount === 0)
         return next(
           new AppError(
-            'There is no record between this doctor and this patient',
+            'You have noy any patients to send message to',
             404
           )
         );
+
+      const records = await Record.find({
+        doctorId,
+      }).populate({
+        path: 'patientId',
+        select: 'name email',
+      });
+
+      await Promise.all(
+        records.map((record) =>
+          sendEmailNotificationToPatient({
+            to: record.patientId.email,
+            subject: 'You have a new message from your doctor',
+            message: req.body.message,
+            patient: record.patientId.name,
+            doctor: req.user.name,
+            from: req.user.email,
+          })
+        )
+      );
 
       sendSuccess(records, 200, res);
     }
