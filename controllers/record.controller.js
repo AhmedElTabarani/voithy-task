@@ -160,7 +160,7 @@ class RecordController {
         doctor: req.user.name,
         from: req.user.email,
       });
-      sendSuccess(record, 200, res);
+      sendSuccess(null, 204, res);
     }
   );
 
@@ -213,7 +213,7 @@ class RecordController {
         )
       );
 
-      sendSuccess(records, 200, res);
+      sendSuccess(null, 204, res);
     }
   );
 }
