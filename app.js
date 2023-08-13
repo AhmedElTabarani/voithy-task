@@ -7,6 +7,9 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 
+const swaggerUI = require('swagger-ui-express');
+const specs = require('./swagger/swaggerSpecs');
+
 const patientRouter = require('./routes/patient.routes');
 const doctorRouter = require('./routes/doctor.routes');
 const recordRouter = require('./routes/record.routes');
@@ -32,6 +35,7 @@ app.use(cors());
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 app.use('/api/doctors', doctorRouter);
 app.use('/api/patients', patientRouter);
 app.use('/api/records', recordRouter);
