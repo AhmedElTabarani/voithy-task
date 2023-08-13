@@ -1,11 +1,11 @@
 const app = require('./app');
 const dbConnect = require('./dbConnect');
 
-dbConnect
+module.exports = dbConnect
   .then(async () => {
     console.log('> Database connected successfully');
     const port = process.env.PORT || 3030;
-    app.listen(port, () =>
+    return app.listen(port, () =>
       console.log(`Listening on port http://localhost:${port} ...`)
     );
   })

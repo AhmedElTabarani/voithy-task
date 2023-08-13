@@ -5,7 +5,8 @@ const {
 } = require('./sendError');
 
 exports.sendError = (err, res) => {
-  if (process.env.NODE_ENV === 'development')
+  const env = process.env.NODE_ENV;
+  if (env === 'development' || env === 'test')
     return sendErrorDev(err, res);
 
   // in production

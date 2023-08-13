@@ -12,7 +12,6 @@ module.exports = errorDetection = (err) => {
     );
     return new AppError(messages.join(', '), 400);
   }
-  console.log(err);
   // Duplicate user email
   if (err.code === 11000) {
     const duplicatedField = Object.keys(err.keyValue)[0];

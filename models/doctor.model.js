@@ -32,12 +32,8 @@ doctorSchema.pre('save', async function (next) {
 
 doctorSchema.pre('findOneAndUpdate', async function (next) {
   if (!this._update.password) return next();
-  console.log(this._update.password);
   this._update.password = await hashPassword(this._update.password);
   this._update.passwordChangedAt = Date.now() - 1000;
-  console.log(this._update.password);
-  console.log(this._update.passwordChangedAt);
-
   next();
 });
 
