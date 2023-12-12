@@ -28,10 +28,10 @@ const options = {
       description: 'Voithy Project',
     },
     basePath: '/api',
-    host: 'https://average-fox-sandals.cyclic.app',
+    host: 'https://cloudy-plum-tights.cyclic.app/',
     servers: [
       {
-        url: 'https://average-fox-sandals.cyclic.app',
+        url: 'https://cloudy-plum-tights.cyclic.app/',
       },
       {
         url: 'http://locahost:3030/',
