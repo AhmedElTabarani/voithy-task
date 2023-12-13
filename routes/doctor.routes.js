@@ -129,18 +129,18 @@ router
    *   responses:
    *    200:
    *     description: success to update the current logged in doctor.
-   *    content:
-   *     application/json:
-   *      schema:
-   *       type: object
-   *       properties:
-   *        status:
-   *         type: string
-   *        token:
-   *         type: string
-   *         description: The token of the doctor
-   *        data:
-   *         $ref: '#/components/schemas/doctor'
+   *     content:
+   *      application/json:
+   *       schema:
+   *        type: object
+   *        properties:
+   *         status:
+   *          type: string
+   *         token:
+   *          type: string
+   *          description: The token of the doctor
+   *         data:
+   *          $ref: '#/components/schemas/doctor'
    */
 
   .patch(

@@ -127,19 +127,19 @@ router
    *      $ref: '#/components/schemas/updatePatientSchema'
    *   responses:
    *    200:
-   *     description: success to update the current logged in patient.
-   *    content:
-   *     application/json:
-   *      schema:
-   *       type: object
-   *       properties:
-   *        status:
-   *         type: string
-   *        token:
-   *         type: string
-   *         description: The token of the patient
-   *        data:
-   *         $ref: '#/components/schemas/patient'
+   *      description: success to update the current logged in patient.
+   *      content:
+   *       application/json:
+   *        schema:
+   *         type: object
+   *         properties:
+   *          status:
+   *            type: string
+   *          token:
+   *            type: string
+   *            description: The token of the patient
+   *          data:
+   *            $ref: '#/components/schemas/patient'
    */
 
   .patch(
