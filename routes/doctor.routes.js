@@ -13,6 +13,30 @@ const changePasswordDoctorSchema = require('../validation/doctor/change-password
 
 /**
  * @swagger
+ * /api/doctors:
+ *  get:
+ *   summary: Get all doctors
+ *   tags: [Doctor]
+ *   responses:
+ *    200:
+ *     description: success to get all doctors.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         status:
+ *          type: string
+ *         data:
+ *          type: array
+ *          items:
+ *           $ref: '#/components/schemas/doctor'
+ */
+
+router.route('/').get(doctorController.getAll);
+
+/**
+ * @swagger
  * /api/doctors/signup:
  *  post:
  *   summary: Signup a doctor

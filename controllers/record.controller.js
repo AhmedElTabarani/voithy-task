@@ -8,29 +8,27 @@ const asyncHandler = require('../utils/asyncHandler');
 const { sendSuccess } = require('../utils/sendResponse');
 
 class RecordController {
-  getAllOwnedPatientsOfDoctor = asyncHandler(
-    async (req, res, next) => {
-      const APIFeature = new APIFeatures(
-        Record.find({
-          doctorId: req.params.id,
-        }),
-        req.query
-      );
-      const query = APIFeature.filter()
-        .sort()
-        .select()
-        .paginate()
-        .getQuery();
+  getAllRecordsByDoctorId = asyncHandler(async (req, res, next) => {
+    const APIFeature = new APIFeatures(
+      Record.find({
+        doctorId: req.params.id,
+      }),
+      req.query
+    );
+    const query = APIFeature.filter()
+      .sort()
+      .select()
+      .paginate()
+      .getQuery();
 
-      const records = await query.populate({
-        path: 'patientId',
-        select: 'name email gender dateOfBirth',
-      });
-      sendSuccess(records, 200, res);
-    }
-  );
+    const records = await query.populate({
+      path: 'patientId',
+      select: 'name email gender dateOfBirth',
+    });
+    sendSuccess(records, 200, res);
+  });
 
-  getOneOwnedPatientOfDoctorByPatientId = asyncHandler(
+  getOneRecordsByDoctorAndPatientIds = asyncHandler(
     async (req, res, next) => {
       const doctorId = req.params.id;
       const patientId = req.params.patientId;
@@ -54,6 +52,27 @@ class RecordController {
       sendSuccess(record, 200, res);
     }
   );
+
+  getAllRecordsByPatientId = asyncHandler(async (req, res, next) => {
+    const APIFeature = new APIFeatures(
+      Record.find({
+        patientId: req.params.id,
+      }),
+      req.query
+    );
+    const query = APIFeature.filter()
+      .sort()
+      .select()
+      .paginate()
+      .getQuery();
+
+    const records = await query.populate({
+      path: 'patientId',
+      select: 'name email gender dateOfBirth',
+    });
+
+    sendSuccess(records, 200, res);
+  });
 
   create = asyncHandler(async (req, res, next) => {
     const doctorId = req.body.doctorId;
@@ -108,7 +127,9 @@ class RecordController {
       await sendEmailNotificationToPatient({
         to: record.patientId.email,
         subject: 'Your record has been updated',
-        message: `Your ${Object.keys(req.body).join(', ')} with Dr. ${req.user.name} has been updated`,
+        message: `Your ${Object.keys(req.body).join(', ')} with Dr. ${
+          req.user.name
+        } has been updated`,
         patient: record.patientId.name,
         doctor: req.user.name,
         from: req.user.email,

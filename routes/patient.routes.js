@@ -9,6 +9,33 @@ const signupPatientSchema = require('../validation/patient/signup-patient.valida
 const loginPatientSchema = require('../validation/patient/login-patient.validation');
 const updatePatientSchema = require('../validation/patient/update-patient.validation');
 const changePasswordPatientSchema = require('../validation/patient/change-password-patient.validation');
+const Doctor = require('../models/doctor.model');
+
+/**
+ * @swagger
+ * /api/patients:
+ *  get:
+ *   summary: Get all patients
+ *   tags: [Patient]
+ *   responses:
+ *    200:
+ *     description: success to get all patients.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         status:
+ *          type: string
+ *         data:
+ *          type: array
+ *          items:
+ *           $ref: '#/components/schemas/patient'
+ */
+
+router
+  .route('/')
+  .get(authController.auth(Doctor), patientController.getAll);
 
 /**
  * @swagger
